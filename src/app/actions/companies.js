@@ -12,7 +12,7 @@ export async function getAllCompanies() {
 		}
 
 		const companies = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-		return JSON.parse(JSON.stringify(companies));
+		return { data: JSON.parse(JSON.stringify(companies)) };
 	} catch (error) {
 		return { error: error.message };
 	}

@@ -4,7 +4,7 @@ import { Inter as FontSans } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { AuthProvider } from "@/hooks/useAuth";
 import { Toaster } from "@/components/ui/sonner";
-import Providers from "@/components/ProgressBarProvider";
+import Providers from "@/lib/providers";
 
 const fontSans = FontSans({
 	subsets: ["latin"],

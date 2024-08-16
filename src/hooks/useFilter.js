@@ -1,78 +1,80 @@
 "use client";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useDebouncedCallback } from "use-debounce";
+import { useRouter, useSearchParams } from "next/navigation";
+
+const initialState = {
+	searchQuery: "",
+	sortField: "",
+	sortDirection: "asc",
+	filters: {},
+	page: 1,
+	pageSize: 10,
+};
 
 export function useFilter() {
-	const [selectedFilters, setSelectedFilters] = useState({});
-	const [searchQuery, setSearchQuery] = useState("");
-	const [sortField, setSortField] = useState("");
-	const [sortDirection, setSortDirection] = useState("asc");
-
+	const [state, setState] = useState(initialState);
 	const router = useRouter();
-
-	const updateFilter = (filterKey, values) => {
-		setSelectedFilters((prev) => ({
-			...prev,
-			[filterKey]: values,
-		}));
-	};
-
-	const updateSearchQuery = (query) => {
-		setSearchQuery(query);
-	};
-
-	const updateSorting = (field, direction) => {
-		setSortField(field);
-		setSortDirection(direction);
-	};
-
-	const clearAllFilters = () => {
-		setSelectedFilters({});
-		setSearchQuery("");
-		setSortField("");
-		setSortDirection("asc");
-	};
+	const searchParams = useSearchParams();
 
 	const isEmpty = (value) => value === "" || (Array.isArray(value) && value.length === 0);
 
-	useEffect(() => {
+	const updateState = (newState) => {
+		setState(newState);
+		updateUrlParams(newState);
+	};
+
+	const updateUrlParams = (newState) => {
 		const params = new URLSearchParams();
 
-		if (searchQuery) params.set("searchQuery", searchQuery);
-		if (sortField) params.set("sortField", sortField);
-		if (sortDirection !== "asc") params.set("sortDirection", sortDirection);
+		if (newState.searchQuery) params.set("searchQuery", newState.searchQuery);
+		if (newState.sortField) params.set("sortField", newState.sortField);
+		if (newState.sortDirection !== "asc") params.set("sortDirection", newState.sortDirection);
 
-		Object.entries(selectedFilters).forEach(([key, value]) => {
+		Object.entries(newState.filters).forEach(([key, value]) => {
 			if (!isEmpty(value)) {
-				params.set(key, value.join(","));
+				const filterValues = Array.isArray(value) ? value : value.split(",");
+				params.set(key, filterValues.join(","));
 			}
 		});
 
+		if (newState.page > 1) params.set("page", newState.page);
+		if (newState.pageSize !== 10) params.set("pageSize", newState.pageSize);
+
 		router.replace(`?${params.toString()}`, { shallow: true });
-	}, [selectedFilters, searchQuery, sortField, sortDirection, router]);
+	};
 
-	useEffect(() => {
-		const params = new URLSearchParams(window.location.search);
-		const filters = {};
+	const updateSearchQuery = useDebouncedCallback((term) => {
+		updateState({ ...state, searchQuery: term });
+	}, 300);
 
-		for (const [key, value] of params.entries()) {
-			if (key === "searchQuery") setSearchQuery(value);
-			else if (key === "sortField") setSortField(value);
-			else if (key === "sortDirection") setSortDirection(value);
-			else filters[key] = value.split(",");
-		}
+	const updateSorting = (field, direction) => {
+		updateState({ ...state, sortField: field, sortDirection: direction });
+	};
 
-		setSelectedFilters(filters);
-	}, []);
+	const updateFilter = (key, values) => {
+		updateState({ ...state, filters: { ...state.filters, [key]: values } });
+	};
+
+	const clearAllFilters = () => {
+		updateState(initialState);
+	};
+
+	const updatePage = (newPage) => {
+		updateState({ ...state, page: newPage });
+	};
 
 	return {
-		selectedFilters,
-		updateFilter,
-		searchQuery,
+		searchQuery: state.searchQuery,
 		updateSearchQuery,
-		sortField,
-		sortDirection,
+		sortField: state.sortField,
+		sortDirection: state.sortDirection,
 		updateSorting,
+		filters: state.filters,
+		updateFilter,
 		clearAllFilters,
+		page: state.page,
+		pageSize: state.pageSize,
+		updatePage,
 	};
 }

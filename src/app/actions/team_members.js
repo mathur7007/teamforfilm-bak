@@ -1,6 +1,7 @@
 "use server";
 
 import { adminDb, FieldValue } from "@/lib/firebase-admin";
+import { Filter } from "firebase-admin/firestore";
 
 // Utility function to convert Firestore Timestamps to JavaScript Dates
 const transformTimestamps = (doc) => {
@@ -19,19 +20,15 @@ const transformTimestamps = (doc) => {
  */
 export const getAllTeamMembers = async () => {
 	try {
-		const teamMembersRef = adminDb.collection("team_members");
-		const teamMembersSnapshots = await teamMembersRef.get();
+		const collectionRef = adminDb.collection("team_members");
+		const snapshot = await collectionRef.get();
 
-		if (teamMembersSnapshots.empty) {
-			return { error: "No TeamMember data found" };
+		if (snapshot.empty) {
+			return { error: "No TeamMember found" };
 		}
 
-		const allTeamMembers = teamMembersSnapshots.docs.map((doc) => ({
-			uid: doc.id,
-			...transformTimestamps(doc),
-		}));
-
-		return JSON.parse(JSON.stringify(allTeamMembers));
+		const teamMembers = snapshot.docs.map((doc) => ({ uid: doc.id, ...doc.data() }));
+		return { data: JSON.parse(JSON.stringify(teamMembers)) };
 	} catch (error) {
 		return { error: error.message };
 	}
@@ -75,6 +72,7 @@ export const saveTeamMemberDetails = async (uid, data) => {
 		const teamMemberRef = adminDb.collection("team_members").doc(uid);
 		const profileWithTimestamps = {
 			...data,
+			createdAt: new Date(),
 			updatedAt: new Date(),
 		};
 		await teamMemberRef.set(profileWithTimestamps, { merge: true });
