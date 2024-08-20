@@ -15,12 +15,14 @@ export default function JobsDataGrid({ searchParams }) {
 		return (
 			<div className="space-y-10">
 				<JobFilters />
-				{jobs && jobs.length && (
+				{jobs && jobs.length > 0 ? (
 					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
 						{jobs?.map((job) => (
 							<JobCard key={job.id} job={job}></JobCard>
 						))}
 					</div>
+				) : (
+					<div className="flex justify-center items-center min-h-[250px] text-3xl">No Job Found</div>
 				)}
 				<PaginationControls totalItems={totalItems} />
 			</div>

@@ -15,12 +15,14 @@ export default function CompaniesDataGrid({ searchParams }) {
 		return (
 			<div className="space-y-10">
 				<CompanyFilters />
-				{companies && companies.length && (
+				{companies && companies.length > 0 ? (
 					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
 						{companies?.map((company) => (
 							<CompanyCard key={company.id} company={company}></CompanyCard>
 						))}
 					</div>
+				) : (
+					<div className="flex justify-center items-center min-h-[250px] text-3xl">No Company found</div>
 				)}
 				<PaginationControls totalItems={totalItems} />
 			</div>

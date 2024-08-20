@@ -22,7 +22,7 @@ export function useCompanies(params) {
 		let companies = data;
 
 		if (searchQuery) {
-			companies = companies.filter((member) => member.firstName?.toLowerCase().includes(searchQuery.toLowerCase()));
+			companies = companies.filter((company) => company.companyName?.toLowerCase().includes(searchQuery.toLowerCase()));
 		}
 
 		// if (filmDepartments) {

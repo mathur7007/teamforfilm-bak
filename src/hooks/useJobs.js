@@ -22,7 +22,7 @@ export function useJobs(params) {
 		let jobs = data;
 
 		if (searchQuery) {
-			jobs = jobs.filter((member) => member.firstName?.toLowerCase().includes(searchQuery.toLowerCase()));
+			jobs = jobs.filter((job) => job.projectTitle?.toLowerCase().includes(searchQuery.toLowerCase()));
 		}
 
 		// if (filmDepartments) {

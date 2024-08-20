@@ -48,6 +48,10 @@ export function useFilter() {
 		updateState({ ...state, searchQuery: term });
 	}, 300);
 
+	// const updateSearchQuery = (term) => {
+	// 	updateState({ ...state, searchQuery: term });
+	// };
+
 	const updateSorting = (field, direction) => {
 		updateState({ ...state, sortField: field, sortDirection: direction });
 	};
