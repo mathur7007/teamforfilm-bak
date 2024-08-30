@@ -58,7 +58,7 @@
 	}
 }
 
-/* .bg-black {
+.bg-gradient {
 	--tw-bg-opacity: 1;
-	background-color: #735da5;
-} */
+	background-image: linear-gradient(275deg, #ff3cac 0%, #784ba0 17%, #2b86c5 100%);
+}

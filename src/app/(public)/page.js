@@ -4,7 +4,7 @@ import Image from "next/image";
 export default function Home() {
 	return (
 		<>
-			<div className="text-white">
+			<div className="text-white bg-gradient">
 				<AppMaxWidthContainer>
 					<div className="flex flex-col lg:flex-row justify-between gap-5 py-20">
 						<div className="flex flex-col justify-center relative w-full lg:w-5/12 gap-2">

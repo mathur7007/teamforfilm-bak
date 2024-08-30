@@ -3,7 +3,7 @@ import Image from "next/image";
 import styles from "./styles.module.css";
 import { notFound } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { FaWhatsapp } from "react-icons/fa";
+import { FaEdit, FaUserEdit, FaWhatsapp } from "react-icons/fa";
 
 import AppMaxWidthContainer from "@/components/ui/max-width-container";
 import ImageGallery from "@/components/ImageGallery";
@@ -27,6 +27,12 @@ import Reviews from "./Reviews";
 import { getTeamMemberReviews } from "@/app/actions/review";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { IoPlayCircleOutline } from "react-icons/io5";
+import { Edit, Edit2, Edit2Icon, Edit3, Edit3Icon, EditIcon, FileEditIcon, Play } from "lucide-react";
+import { CiEdit } from "react-icons/ci";
+import { FiEdit } from "react-icons/fi";
+import { FcEditImage } from "react-icons/fc";
+import IntroVideoDialog from "./_components/intro-video-dialog";
 
 export default async function TeamMemberDetails({ params }) {
 	const user = await getCurrentUser();
@@ -47,7 +53,7 @@ export default async function TeamMemberDetails({ params }) {
 		<div className="bg-black text-[#ffffffcc] py-12 md:pt-28 pb-10">
 			<AppMaxWidthContainer>
 				<div className="flex flex-col lg:flex-row gap-10">
-					<div className="overflow-hidden rounded-md max-w-[300px]">
+					<div className="relative rounded-md max-w-[300px]">
 						<Image
 							src={teamMember.profileImage || "/profile_pictures/team_member_profile_placeholder.png"}
 							width={300}
@@ -56,11 +62,17 @@ export default async function TeamMemberDetails({ params }) {
 							decoding="async"
 							className="aspect-[3/4] h-fit w-full object-cover transition-all hover:scale-105"
 						></Image>
-						{uid && uid === teamMemberId && (
-							<Button asChild size={"sm"} className="my-4 float-right">
-								<Link href="/account/profile/team-profile">Edit Profile</Link>
-							</Button>
-						)}
+
+						<div className="flex flex-col gap-4 absolute top-[40%] right-[-15px]">
+							<IntroVideoDialog />
+							{uid && uid === teamMemberId && (
+								<Button variant="outline" size="icon" asChild>
+									<Link href="/account/profile/team-profile">
+										<Edit2 className="h-4 w-4" />
+									</Link>
+								</Button>
+							)}
+						</div>
 					</div>
 					<div className="flex flex-col flex-1 justify-center items-start gap-6">
 						<div className="flex flex-col justify-start items-start gap-4">

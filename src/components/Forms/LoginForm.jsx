@@ -48,7 +48,7 @@ export default function LoginForm() {
 
 		try {
 			await loginWithEmail(email, password);
-			setRedirecting(true); // Set redirecting to true before pushing to the router
+			setRedirecting(true);
 			router.push("/account/profile");
 		} catch (error) {
 			setErrorMessage("Error: " + error.message);
